@@ -431,14 +431,26 @@ fn next_ip_pair(ip_pair: (u8, u8)) -> (u8, u8) {
     if ip_pair.0 == 0 || ip_pair.1 == 0 {
         panic!("Invalid host");
     }
-    match (
-        Ord::cmp(&ip_pair.0, &(MAX_HBONE_WORKLOADS - 1)),
-        Ord::cmp(&ip_pair.1, &MAX_HBONE_WORKLOADS),
-    ) {
-        (Greater, _) | (_, Greater) | (Equal, Equal) => panic!("Invalid host"),
-        (_, Less) => (ip_pair.0, ip_pair.1 + 1),
-        (Less, Equal) => (ip_pair.0 + 1, ip_pair.0 + 2),
+
+    // ip_pair.1 reaches the maximum value, reset the starting value 1
+    if ip_pair.1 == MAX_HBONE_WORKLOADS {
+        if ip_pair.0 + 1 > MAX_HBONE_WORKLOADS {
+            panic!("Invalid host");
+        }
+        return (ip_pair.0 + 1, 1)
     }
+
+    // ip_pair.1 NOT reaches the maximum value, +1
+    if ip_pair.1 < MAX_HBONE_WORKLOADS {
+        // the ip can not be equal, get the next one
+        if ip_pair.0 == ip_pair.1 + 1 {
+            return next_ip_pair((ip_pair.0, ip_pair.1 + 1))
+        }
+        return (ip_pair.0, ip_pair.1 + 1)
+    }
+
+    // ip_pair.1 exceeds the maximum value
+    panic!("Invalid host")
 }
 
 /// Reserve IPs in 127.0.1.0/24 for these HBONE connection tests.
