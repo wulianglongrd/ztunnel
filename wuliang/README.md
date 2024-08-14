@@ -36,3 +36,10 @@ docker run -d --privileged -p 127.0.0.1:2222:22 --name wuliang-ztunnel-dev --mou
 ssh user@localhost -p2222
 sudo chown -R user:user ztunnel/
 ```
+
+```shell
+# remote
+$ python3 -m http.server 80
+# local
+$  wget {remote-ip}:80/{file}
+```
