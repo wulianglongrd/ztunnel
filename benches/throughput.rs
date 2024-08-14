@@ -435,7 +435,7 @@ fn next_ip_pair(ip_pair: (u8, u8)) -> (u8, u8) {
     // ip_pair.1 reaches the maximum value, reset the starting value 1
     if ip_pair.1 == MAX_HBONE_WORKLOADS {
         if ip_pair.0 + 1 > MAX_HBONE_WORKLOADS {
-            return (1, 1)
+            return next_ip_pair((1, 1))
         }
         return (ip_pair.0 + 1, 1)
     }
